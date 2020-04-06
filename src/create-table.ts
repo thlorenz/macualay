@@ -1,5 +1,6 @@
+export const BIRD_DATA_TABLE = 'bird_data'
 export const createBirdDataTable = `
-DROP TABLE IF EXISTS bird_data;
+DROP TABLE IF EXISTS ${BIRD_DATA_TABLE};
 
 CREATE TABLE IF NOT EXISTS bird_data (
   -- IDs
@@ -32,10 +33,10 @@ CREATE TABLE IF NOT EXISTS bird_data (
   ratingCount TEXT,
 
   -- Bird Info
-  reportAsTEXT NOT NULL,
-  speciesCodeTEXT NOT NULL,
-  sciNameTEXT NOT NULL,
-  commonNameTEXT NOT NULL,
+  reportAs TEXT NOT NULL,
+  speciesCode TEXT NOT NULL,
+  sciName TEXT NOT NULL,
+  commonName TEXT NOT NULL,
 
 
   -- Image Info

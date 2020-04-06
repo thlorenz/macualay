@@ -1,7 +1,7 @@
 export type MacaulayPage = {
   results: {
     nextCursorMark: string
-    content: BirdData
+    content: BirdData[]
   }
 }
 
@@ -62,6 +62,8 @@ export type ExifData = {
 }
 
 export type MIMEType = 'image/jpeg'
+
+export type BirdDataRow = Exclude<BirdData, 'exifData'> & ExifData
 
 // Example requet to obtain data:
 //curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird?species=zebdov'
