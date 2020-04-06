@@ -40,8 +40,6 @@ export type BirdData = {
   width: number
   height: number
 
-  valid: BooleanString
-  collected: boolean
   exifData: ExifData
   mediaType: MediaType
   source: Source
@@ -49,7 +47,6 @@ export type BirdData = {
 
 export type URL = string
 export type LicenseType = 'Any Lab Use=eBird'
-export type BooleanString = 'true' | 'false'
 export type MediaType = 'Photo'
 export type Source = 'ebird'
 export type ExifData = {
