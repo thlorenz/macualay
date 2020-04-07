@@ -1,0 +1,24 @@
+{
+  "name": "@modules/app",
+  "version": "0.0.0",
+  "description": "electron app",
+  "main": "src/main.ts",
+  "types": "./src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w",
+    "build": "tsc",
+    "start": "electron ./dist/main.js"
+  },
+  "author": "Thorsten Lorenz <thlorenz@gmx.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12",
+    "electron": "^8.2.1"
+  },
+  "dependencies": {
+    "@modules/core": "*",
+    "typescript": "^3.8.3"
+  },
+  "private": true
+}
