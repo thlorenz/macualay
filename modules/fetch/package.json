@@ -2,8 +2,8 @@
   "name": "@modules/fetch",
   "version": "0.0.0",
   "description": "Fetching macaulay data and storing in sqlite database",
-  "main": "./dist/mlay-fetch.js",
-  "types": "./src/mlay-fetch.ts",
+  "main": "./dist/fetch.ts",
+  "types": "./src/fetch.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
