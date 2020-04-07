@@ -2,7 +2,7 @@
   "name": "@modules/core",
   "version": "0.0.0",
   "description": "core functionality",
-  "main": "./src/core.ts",
+  "main": "./dist/core.js",
   "types": "./src/core.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

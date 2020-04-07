@@ -12,8 +12,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node"],
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["node"]
   }
 }
