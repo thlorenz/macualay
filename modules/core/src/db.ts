@@ -19,6 +19,7 @@ const exifDataCols = [
   'make',
 ]
 
+// @ts-ignore
 const ebirdDataCols = [
   'taxon_order',
   'sci_name_codes',
@@ -76,7 +77,7 @@ const columns = [
   'licenseType',
 
   // Ebird data
-  ...ebirdDataCols
+  // ...ebirdDataCols
 ]
 const allCols = columns.join(',')
 

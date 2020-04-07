@@ -1,6 +1,5 @@
-import { MacaulayPage } from '../../core/src/types'
-import { getDB } from '../../core/src/db'
 import * as path from 'path'
+import { getDB, MacaulayPage } from '@modules/core'
 
 export async function processMacualayPage(page: MacaulayPage, dbLocation: string) {
   const db = await getDB(dbLocation)
@@ -13,7 +12,7 @@ export async function processMacualayPage(page: MacaulayPage, dbLocation: string
 }
 
 (async () => {
-  const dbLocation = path.resolve(__dirname, '../data/macaulay.sqlite')
+  const dbLocation = path.resolve(__dirname, '../../../data/macaulay.sqlite')
   console.log({ dbLocation} )
   const page = require('../../../data/page.01.json')
   try {
