@@ -58,6 +58,14 @@ CREATE TABLE IF NOT EXISTS bird_data (
   mediaType TEXT,
   source TExT,
   licenseType TEXT NOT NULL
+  
+  --ebird Data (fetched separately)
+  taxon_order: INTEGER NOT NULL,
+  sci_name_codes: TEXT NOT NULL,
+  banding_codes: TEXT NOT NULL,
+  order: TEXT NOT NULL,
+  family_com_name: TEXT NOT NULL,
+  family_sci_name: TEXT NOT NULL,
 
 ) WITHOUT ROWID;
 `

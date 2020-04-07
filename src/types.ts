@@ -61,18 +61,20 @@ export type ExifData = {
   make: string
 }
 
+// Specific Species:
+//  curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird?species=zebdov'
+// All Species:
+//  curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird'
+export type EbirdSpeciesData = {
+  taxon_order: number,
+  sci_name_codes: string,
+  banding_codes: string,
+  order: string,
+  family_com_name: string,
+  family_sci_name: string,
+}
+
 export type MIMEType = 'image/jpeg'
 
-export type BirdDataRow = Exclude<BirdData, 'exifData'> & ExifData
+export type BirdDataRow = Exclude<BirdData, 'exifData'> & ExifData & EbirdSpeciesData
 
-// Example requet to obtain data:
-//curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird?species=zebdov'
-export type EbirdSpecies = {
-  // skipping first 3 columns (scientific name, common name, species code)
-  // Column (0 based)
-  /* 3 */ category: 'species'
-  /* 4 */ taxon_order: number
-  /* 5 */ com_name_codes: string
-  /* 6 */ sci_name_codes: string
-  /* 7 */ banding_codes: string
-}

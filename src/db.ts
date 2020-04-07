@@ -19,6 +19,15 @@ const exifDataCols = [
   'make',
 ]
 
+const ebirdDataCols = [
+  'taxon_order',
+  'sci_name_codes',
+  'banding_codes',
+  'order',
+  'family_com_name',
+  'family_sci_name',
+]
+
 const columns = [
   // IDs
   'assetId',
@@ -65,6 +74,9 @@ const columns = [
   'mediaType',
   'source',
   'licenseType',
+
+  // Ebird data
+  ...ebirdDataCols
 ]
 const allCols = columns.join(',')
 
@@ -115,14 +127,16 @@ class DB {
     return this._allQuery(`SELECT * FROM ${BIRD_DATA_TABLE};`)
   }
 
-  static create(): Promise<DB> {
-    return DB._instance != null ? Promise.resolve(DB._instance) : DB._createDB()
+  static create(location = DB.location): Promise<DB> {
+    return DB._instance != null
+      ? Promise.resolve(DB._instance)
+      : DB._createDB(location)
   }
 
-  private static _createDB(): Promise<DB> {
+  private static _createDB(location: string): Promise<DB> {
     return new Promise((resolve, reject) => {
       let db: Database
-      db = new Database(DB.location, async (err: Error | null) => {
+      db = new Database(location, async (err: Error | null) => {
         if (err != null) reject(err)
         DB._instance = new DB(db)
         try {
