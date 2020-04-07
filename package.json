@@ -1,23 +1,20 @@
 {
   "name": "macualay",
   "version": "0.0.0",
-  "description": "Storing macaulay data in sqlite database",
-  "main": "index.js",
+  "description": "Viewing macaulay data in Electron app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node-fetch": "^2.5.5",
-    "@types/sqlite3": "^3.1.6",
     "prettier": "^2.0.3",
     "ts-node": "^8.8.2",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
-  "dependencies": {
-    "node-fetch": "^2.6.0",
-    "sqlite3": "^4.1.1"
-  }
+  "workspaces": [
+    "modules/*"
+  ],
+  "private": true
 }

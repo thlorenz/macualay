@@ -1,0 +1,20 @@
+{
+  "name": "@modules/fetch",
+  "version": "0.0.0",
+  "description": "Fetching macaulay data and storing in sqlite database",
+  "main": "./dist/mlay-fetch.js",
+  "types": "./src/mlay-fetch.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thorsten Lorenz <thlorenz@gmx.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.5"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "@modules/core": "*"
+  },
+  "private": true
+}

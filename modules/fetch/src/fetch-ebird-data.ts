@@ -1,6 +1,6 @@
 import assert from 'assert'
 import fetch from 'node-fetch'
-import { EbirdSpeciesData } from './types'
+import { EbirdSpeciesData } from '../../core/src/types'
 
 // 0 based index in csv result
 const ebirdDataFields = {

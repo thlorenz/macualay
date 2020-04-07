@@ -1,0 +1,19 @@
+{
+  "name": "@modules/core",
+  "version": "0.0.0",
+  "description": "core functionality",
+  "main": "./src/core.ts",
+  "types": "./src/core.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thorsten Lorenz <thlorenz@gmx.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/sqlite3": "^3.1.6"
+  },
+  "dependencies": {
+    "sqlite3": "^4.1.1"
+  },
+  "private": true
+}
