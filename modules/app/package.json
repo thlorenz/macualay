@@ -2,22 +2,27 @@
   "name": "@modules/app",
   "version": "0.0.0",
   "description": "electron app",
-  "main": "src/main.ts",
+  "main": "dist/main.js",
   "types": "./src/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w",
     "build": "tsc",
-    "start": "electron ./dist/main.js"
+    "start": "electron .",
+    "rebuild": "electron-builder install-app-deps"
   },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",
   "license": "MIT",
   "devDependencies": {
+    "@types/electron-is-dev": "^1.1.1",
     "@types/node": "^12",
-    "electron": "^8.2.1"
+    "electron": "8.2.1",
+    "electron-builder": "^22.4.1"
   },
   "dependencies": {
     "@modules/core": "*",
+    "electron-is-dev": "^1.2.0",
+    "electron-reload": "^1.5.0",
     "typescript": "^3.8.3"
   },
   "private": true

@@ -1,52 +1,70 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Rectangle, screen } from 'electron'
 import * as path from 'path'
+import isDev from 'electron-is-dev'
 
 let mainWindow: BrowserWindow | null
 
+function getLastDisplay() {
+  const displays = screen.getAllDisplays()
+  const last = displays.pop()!
+  const area = last.workArea
+  return area
+}
+
+function placeRight(area: Rectangle): Rectangle {
+  const width = area.width / 2
+  const height = area.height
+  return {
+    x: area.x + width,
+    y: area.y,
+    width,
+    height,
+  }
+}
+
 async function createWindow() {
+  const area = getLastDisplay()
+  const rect = placeRight(area)
+
   mainWindow = new BrowserWindow({
-    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
     },
-    width: 800,
+    x: rect.x,
+    y: rect.y,
+    width: rect.width,
+    height: rect.height,
   })
 
   // and load the index.html of the app.
   await mainWindow.loadFile(path.join(__dirname, '../index.html'))
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
   mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  if (isDev) {
+    require('electron-reload')(__dirname, {
+      electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
+      forceHardReset: false,
+      hardResetMethod: 'exit',
+    })
+  }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  console.log('bye')
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  // On OS X it"s common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
+if (app != null) {
+  app.allowRendererProcessReuse = true
+  app
+    .on('ready', createWindow)
+    .on('window-all-closed', () => {
+      if (process.platform !== 'darwin') {
+        app.quit()
+      }
+    })
+    .on('activate', () => {
+      if (mainWindow === null) {
+        createWindow()
+      }
+    })
+}

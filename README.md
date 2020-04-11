@@ -10,11 +10,11 @@ Getting 30 results at a time
 # documenting how this was downloaded 30 results at a time
 
 wget -O macaulay.01.json \
-  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746'
+  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746&count=100'
 wget -O macaulay.02.json \
-  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746&cursorMark=AoJ49uDugfECKTIxNzM2MjQ3MQ'
+  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746&cursorMark=AoJ49uDugfECKTIxNzM2MjQ3MQ&count=100'
 wget -O macaulay.03.json \
-  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746&cursorMark=AoJwoN/xgfECKTIxNzM2NjI3MQ'
+  'https://search.macaulaylibrary.org/catalog.json?userId=USER163746&cursorMark=AoJwoN/xgfECKTIxNzM2NjI3MQ&count=100'
 ```
 
 Optionally obtaining more info from ebird about first bird in macaulay.01.json (species: zebdov)
