@@ -28,7 +28,6 @@ async function createWindow() {
 
   mainWindow = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
     },
     x: rect.x,
@@ -43,6 +42,7 @@ async function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  mainWindow.setOpacity(1.0)
 
   if (isDev) {
     require('electron-reload')(__dirname, {
@@ -50,6 +50,7 @@ async function createWindow() {
       forceHardReset: false,
       hardResetMethod: 'exit',
     })
+    mainWindow.webContents.openDevTools({ mode: 'bottom' })
   }
 }
 
