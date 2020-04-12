@@ -1,34 +1,37 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { AppController } from '../logic/app-controller'
 import { BirdDataRow } from '@modules/core'
+import DataTable, { IDataTableColumn } from 'react-data-table-component'
 
-function columnsFromData(data: BirdDataRow[]) {
+function columnsFromData(data: BirdDataRow[]): IDataTableColumn<BirdDataRow>[] {
   if (data.length === 0) return []
   const row = data[0]
-  const cols: string[] = Object.keys(row)
+  const cols = Object.keys(row).map(x => (
+    {
+      name: x,
+      selector: x,
+      sortable: true
+    }
+  ))
   return cols
-}
-
-function renderRow(row: BirdDataRow) {
-  const cells = Object.values(row).map(x => <td>{x}</td>)
-  return (
-    <tr>
-      {cells}
-    </tr>
-  )
 }
 
 export function Table() {
   const data: BirdDataRow[] = AppController.instance.useQueryResult()
-  const columns: string[] = columnsFromData(data)
+  const columns = useMemo(() => columnsFromData(data), [ data])
+  function handleRowClicked(row: BirdDataRow) {
+    console.log(row)
+  }
+
   return (
-    <table>
-      <thead>
-      {columns.map(col => <th>{col}</th>)}
-      </thead>
-      <tbody>
-      {data.map(renderRow)}
-      </tbody>
-    </table>
+    <DataTable
+      title='Query Result'
+      data={data.map(x => ({...x, id: x.assetId }))}
+      columns={columns}
+      onRowClicked={handleRowClicked}
+      theme='dark'
+      selectableRows
+      style={{cursor: 'pointer'}}
+    />
   )
 }

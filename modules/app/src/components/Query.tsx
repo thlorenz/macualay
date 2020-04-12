@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { AppController } from '../logic/app-controller'
+import {AppController} from '../logic/app-controller'
 
 const StyledTextArea = styled.textarea`
   @import url('https://fonts.googleapis.com/css?family=Space+Mono&display=swap');
