@@ -2,16 +2,24 @@ import { app, BrowserWindow, Rectangle, screen } from 'electron'
 import * as path from 'path'
 import isDev from 'electron-is-dev'
 
+const TWITCH_SETUP = true
+
 let mainWindow: BrowserWindow | null
 
-function getLastDisplay() {
+function getPrimaryDisplay() {
+  const displays = screen.getAllDisplays()
+  return displays[0].workArea
+}
+
+function getSecondaryDisplay() {
   const displays = screen.getAllDisplays()
   const last = displays.pop()!
   const area = last.workArea
   return area
 }
 
-function placeRight(area: Rectangle): Rectangle {
+function placeRightSecondaryDisplay(): Rectangle {
+  const area = getSecondaryDisplay()
   const width = area.width / 2
   const height = area.height
   return {
@@ -22,9 +30,20 @@ function placeRight(area: Rectangle): Rectangle {
   }
 }
 
+function placeLeftPrimaryDisplay(): Rectangle {
+  const area = getPrimaryDisplay()
+  const width = area.width / 5
+  const height = area.height
+  return {
+    x: area.x,
+    y: area.y,
+    width,
+    height,
+  }
+}
+
 async function createWindow() {
-  const area = getLastDisplay()
-  const rect = placeRight(area)
+  const rect = TWITCH_SETUP ? placeLeftPrimaryDisplay() : placeRightSecondaryDisplay()
 
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -55,7 +74,7 @@ async function createWindow() {
 }
 
 if (app != null) {
-  app.allowRendererProcessReuse = true
+  app.allowRendererProcessReuse = false
   app
     .on('ready', createWindow)
     .on('window-all-closed', () => {

@@ -1,7 +1,15 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
+import { Query } from './Query'
+import { Table } from './Table'
 
-export class App extends Component {
-  render() {
-    return <div>Hello World</div>
-  }
+export function App() {
+  useEffect(() => {
+
+  })
+  return (
+    <div>
+      <Query />
+      <Table />
+    </div>
+  )
 }

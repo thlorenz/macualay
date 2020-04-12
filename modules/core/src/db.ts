@@ -83,10 +83,10 @@ const allCols = columns.join(',')
 
 const numberCols = ['latitude', 'longitude', 'width', 'height']
 
-class DB {
-  constructor(private readonly _db: Database) {}
+export class DB {
+  private constructor(private readonly _db: Database) {}
 
-  _execQuery(query: string): Promise<void> {
+  private _execQuery(query: string): Promise<void> {
     return new Promise((resolve, reject) =>
       this._db.exec(query, (err: Error | null) =>
         err == null ? resolve() : reject(err)
@@ -94,7 +94,7 @@ class DB {
     )
   }
 
-  _allQuery(query: string): Promise<any[]> {
+  private _allQuery(query: string): Promise<any[]> {
     return new Promise((resolve, reject) =>
       this._db.all(query, (err: Error | null, rows: any[]) =>
         err == null ? resolve(rows) : reject(err)

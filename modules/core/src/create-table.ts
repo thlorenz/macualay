@@ -1,6 +1,5 @@
 export const BIRD_DATA_TABLE = 'bird_data'
 export const createBirdDataTable = `
-DROP TABLE IF EXISTS ${BIRD_DATA_TABLE};
 
 CREATE TABLE IF NOT EXISTS bird_data (
   -- IDs
