@@ -35,6 +35,7 @@ export function Table() {
         gridRowEnd: 2,
         gridColumnStart: 1,
         gridColumnEnd: 4,
+        overflow: 'scroll',
       }}
     />
   )

@@ -7,6 +7,8 @@ import { BirdDetails } from './BirdDetails'
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  height: 100vh;
+  width: 100vw;
 `
 const Grid = styled.div`
   display: grid;
