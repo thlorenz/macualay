@@ -22,6 +22,8 @@ export type BirdData = {
   previewUrl: URL
   largeUrl: URL
   mediaUrl: URL
+  // TODO: it seems like all thumbnails point to the same placeholder URL,
+  // may not be needed
   thumbnailUrl: URL
   mediaDownloadUrl: URL
   specimenUrl: URL
@@ -66,15 +68,16 @@ export type ExifData = {
 // All Species:
 //  curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird'
 export type EbirdSpeciesData = {
-  taxon_order: number,
-  sci_name_codes: string,
-  banding_codes: string,
-  order: string,
-  family_com_name: string,
-  family_sci_name: string,
+  taxon_order: number
+  sci_name_codes: string
+  banding_codes: string
+  order: string
+  family_com_name: string
+  family_sci_name: string
 }
 
 export type MIMEType = 'image/jpeg'
 
-export type BirdDataRow = Exclude<BirdData, 'exifData'> & ExifData & EbirdSpeciesData
-
+export type BirdDataRow = Exclude<BirdData, 'exifData'> &
+  ExifData &
+  EbirdSpeciesData

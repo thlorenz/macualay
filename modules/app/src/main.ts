@@ -2,7 +2,7 @@ import { app, BrowserWindow, Rectangle, screen } from 'electron'
 import * as path from 'path'
 import isDev from 'electron-is-dev'
 
-const TWITCH_SETUP = true
+const TWITCH_SETUP = false
 
 let mainWindow: BrowserWindow | null
 
@@ -43,7 +43,9 @@ function placeLeftPrimaryDisplay(): Rectangle {
 }
 
 async function createWindow() {
-  const rect = TWITCH_SETUP ? placeLeftPrimaryDisplay() : placeRightSecondaryDisplay()
+  const rect = TWITCH_SETUP
+    ? placeLeftPrimaryDisplay()
+    : placeRightSecondaryDisplay()
 
   mainWindow = new BrowserWindow({
     webPreferences: {
