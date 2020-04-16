@@ -27,10 +27,11 @@ export function Table() {
       data={data.map((x) => ({ ...x, id: x.assetId }))}
       columns={columns}
       onRowClicked={handleRowClicked}
-      theme="dark"
+      highlightOnHover
+      pointerOnHover
       selectableRows
+      dense
       style={{
-        cursor: 'pointer',
         gridRowStart: 2,
         gridRowEnd: 2,
         gridColumnStart: 1,
