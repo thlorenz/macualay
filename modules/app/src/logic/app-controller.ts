@@ -1,10 +1,10 @@
 import { EffectCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 import assert from 'assert'
-import { BirdDataRow, DB, getDB } from '@modules/core'
+import { BirdDataRow, DB, getDB, birdInfoCols } from '@modules/core'
 
 export class AppController extends EventEmitter {
-  private _query: string = 'Enter query here'
+  private _query: string = `SELECT ${birdInfoCols.join(', ')} from bird_data;`
   private _selectedRow?: BirdDataRow
 
   constructor(private readonly _db: DB) {
@@ -32,7 +32,7 @@ export class AppController extends EventEmitter {
 
   async runQuery() {
     assert(this._query != null, 'cannot run null query')
-    const result = await this._db.selectAllBirdData()
+    const result = await this._db.queryWithResult(this.query)
     this._emitQueryResult(result)
   }
 

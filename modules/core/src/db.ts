@@ -28,22 +28,16 @@ const ebirdDataCols = [
   'family_com_name',
   'family_sci_name',
 ]
-
-const columns = [
-  // IDs
+export const idCols = [
   'assetId',
   'userId',
   'catalogId',
   'eBirdChecklistId',
+] as const
 
-  'userDisplayName',
+export const locationCols = ['location', 'latitude', 'longitude'] as const
 
-  // Location
-  'location',
-  'latitude',
-  'longitude',
-
-  // URLs
+export const urlCols = [
   'previewUrl',
   'largeUrl',
   'mediaUrl',
@@ -53,33 +47,34 @@ const columns = [
   'userProfileUrl',
   'ebirdSpeciesUrl',
   'eBirdChecklistUrl',
+] as const
 
-  // Rating
-  'rating',
-  'ratingCount',
+export const ratingCols = ['rating', 'ratingCount'] as const
 
-  // Bird Info
+export const birdInfoCols = [
   'reportAs',
   'speciesCode',
   'sciName',
   'commonName',
+] as const
 
-  // Image Info
-  'width',
-  'height',
+export const imageInfoCols = ['width', 'height'] as const
 
-  // ExifData
+export const databaseColumns = [
+  ...idCols,
+  'userDisplayName',
+  ...locationCols,
+  ...urlCols,
+  ...ratingCols,
+  ...birdInfoCols,
+  ...imageInfoCols,
   ...exifDataCols,
-
-  // Misc
   'mediaType',
   'source',
   'licenseType',
-
-  // Ebird data
   // ...ebirdDataCols
-]
-const allCols = columns.join(',')
+] as const
+const allCols = databaseColumns.join(',')
 
 const numberCols = ['latitude', 'longitude', 'width', 'height']
 
@@ -94,7 +89,7 @@ export class DB {
     )
   }
 
-  private _allQuery(query: string): Promise<any[]> {
+  queryWithResult(query: string): Promise<any[]> {
     return new Promise((resolve, reject) =>
       this._db.all(query, (err: Error | null, rows: any[]) =>
         err == null ? resolve(rows) : reject(err)
@@ -115,7 +110,7 @@ export class DB {
 
     const values: (string | number | ExifData)[] = []
     for (const [k, v] of Object.entries(row)) {
-      const colIdx = columns.indexOf(k)
+      const colIdx = databaseColumns.indexOf(k)
       values[colIdx] = numberCols.includes(k) ? v : `'${escape(v)}'`
     }
     const parameters = values.join(',')
@@ -125,7 +120,7 @@ export class DB {
   }
 
   async selectAllBirdData(): Promise<BirdDataRow[]> {
-    return this._allQuery(`SELECT * FROM ${BIRD_DATA_TABLE};`)
+    return this.queryWithResult(`SELECT * FROM ${BIRD_DATA_TABLE};`)
   }
 
   static create(location = DB.location): Promise<DB> {
