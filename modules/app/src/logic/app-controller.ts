@@ -1,24 +1,34 @@
 import { EffectCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 import assert from 'assert'
-import { BirdDataRow, DB, getDB, birdInfoCols } from '@modules/core'
+import { BirdDataRow, DB, getDB } from '@modules/core'
+
+import { queries, Query, defaultQuery } from '../queries/queries'
 
 export class AppController extends EventEmitter {
-  private _query: string = `SELECT ${birdInfoCols.join(', ')} from bird_data;`
+  private _query: Query = defaultQuery
+  private _queries: Query[] = queries
   private _selectedRow?: BirdDataRow
 
   constructor(private readonly _db: DB) {
     super()
   }
 
-  public get query(): string {
+  public get query() {
     return this._query
   }
 
-  public set query(value: string) {
+  public editedQuery = (value: string) => {
     assert(value != null, 'cannot set null query')
-    this._query = value
+    this._query = { label: '<edited>', value }
     this.emit('query-updated', this._query)
+  }
+
+  public selectedQuery(query: Query) {
+    assert(query != null, 'cannot set null query')
+    this._query = query
+    this.emit('query-updated', this._query)
+    this.runQuery()
   }
 
   public get selectedRow(): BirdDataRow | undefined {
@@ -32,7 +42,7 @@ export class AppController extends EventEmitter {
 
   async runQuery() {
     assert(this._query != null, 'cannot run null query')
-    const result = await this._db.queryWithResult(this.query)
+    const result = await this._db.queryWithResult(this.query.value)
     this._emitQueryResult(result)
   }
 
@@ -57,7 +67,7 @@ export class AppController extends EventEmitter {
   useQuery = () => {
     const [query, setQuery] = useState(this._query)
     const effect: EffectCallback = () => {
-      function onQueryUpdated(query: string) {
+      function onQueryUpdated(query: Query) {
         setQuery(query)
       }
 
@@ -87,6 +97,11 @@ export class AppController extends EventEmitter {
     useEffect(effect)
 
     return queryResult
+  }
+
+  useQueries = () => {
+    const [queries] = useState<Query[]>(this._queries)
+    return queries
   }
 
   private static _instance: AppController | undefined

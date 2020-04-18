@@ -158,3 +158,4 @@ export class DB {
 }
 
 export const getDB = DB.create
+export { BIRD_DATA_TABLE }

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { QueryInput, QueryExecute } from './Query'
+import { QueryInput, QueryMenu } from './Query'
 import { Table } from './Table'
 import styled from 'styled-components'
 import { BirdDetails } from './BirdDetails'
@@ -13,7 +13,7 @@ const Container = styled.div`
 const Grid = styled.div`
   display: grid;
   grid-template-rows: 200px auto;
-  grid-template-columns: 300px auto 50px;
+  grid-template-columns: 300px auto 150px;
   width: 90vw;
 `
 
@@ -24,7 +24,7 @@ export function App() {
       <Grid>
         <BirdDetails />
         <QueryInput />
-        <QueryExecute />
+        <QueryMenu />
         <Table />
       </Grid>
     </Container>
