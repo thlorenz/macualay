@@ -3,16 +3,18 @@ import { EventEmitter } from 'events'
 import assert from 'assert'
 import { BirdDataRow, DB, getDB } from '@modules/core'
 
-import { queries, Query, defaultQuery } from '../queries/queries'
+import { queries, Query } from '../queries/queries'
 
 export class AppController extends EventEmitter {
-  private _query: Query = defaultQuery
-  private _queries: Query[] = queries
+  private _query: Query = queries.defaultQuery
+  private _queries: readonly Query[] = queries.queries
   private _selectedRow?: BirdDataRow
 
   constructor(private readonly _db: DB) {
     super()
   }
+
+  public refreshQueries() {}
 
   public get query() {
     return this._query
@@ -40,6 +42,12 @@ export class AppController extends EventEmitter {
     this.emit('row-selected', this._selectedRow)
   }
 
+  public savedQuery(savedQuery: Query) {
+    this._queries = queries.refresh()
+    this.emit('queries-updated', this._queries)
+    this.selectedQuery(savedQuery)
+  }
+
   async runQuery() {
     assert(this._query != null, 'cannot run null query')
     const result = await this._db.queryWithResult(this.query.value)
@@ -64,7 +72,7 @@ export class AppController extends EventEmitter {
     return selectedRow
   }
 
-  useQuery = () => {
+  useQuery: () => Query = () => {
     const [query, setQuery] = useState(this._query)
     const effect: EffectCallback = () => {
       function onQueryUpdated(query: Query) {
@@ -100,7 +108,18 @@ export class AppController extends EventEmitter {
   }
 
   useQueries = () => {
-    const [queries] = useState<Query[]>(this._queries)
+    const [queries, setQueries] = useState<readonly Query[]>(this._queries)
+    const effect: EffectCallback = () => {
+      function onQueriesUpdated(queries: readonly Query[]) {
+        setQueries(queries)
+      }
+
+      this.on('queries-updated', onQueriesUpdated)
+      return () => {
+        this.off('queries-updated', onQueriesUpdated)
+      }
+    }
+    useEffect(effect)
     return queries
   }
 

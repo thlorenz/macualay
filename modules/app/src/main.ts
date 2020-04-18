@@ -1,6 +1,16 @@
-import { app, BrowserWindow, Rectangle, screen } from 'electron'
+import {
+  app,
+  ipcMain,
+  BrowserWindow,
+  Rectangle,
+  screen,
+  dialog,
+  IpcMainEvent,
+} from 'electron'
 import * as path from 'path'
+import * as fs from 'fs'
 import isDev from 'electron-is-dev'
+import { queryDirectory, labelFromPath } from './queries/queries'
 
 const TWITCH_SETUP = false
 
@@ -64,6 +74,27 @@ async function createWindow() {
     mainWindow = null
   })
   mainWindow.setOpacity(1.0)
+
+  ipcMain.on(
+    'save-query-as',
+    async (event: IpcMainEvent, defaultLabel: string, query: string) => {
+      let error: Error | undefined = undefined
+      let label: string | undefined = undefined
+      const res = await dialog.showSaveDialog(mainWindow!, {
+        title: 'Save current query as',
+        defaultPath: path.join(queryDirectory, `${defaultLabel}.sql`),
+      })
+      if (res.canceled || res.filePath == null) return
+      try {
+        await fs.promises.writeFile(res.filePath, query, 'utf8')
+        label = labelFromPath(res.filePath)
+      } catch (err) {
+        error = err
+      } finally {
+        event.reply('saved-query-as', { err: error, label })
+      }
+    }
+  )
 
   if (isDev) {
     require('electron-reload')(__dirname, {
