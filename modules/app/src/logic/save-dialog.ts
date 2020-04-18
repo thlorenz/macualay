@@ -29,3 +29,17 @@ export async function saveQuery(query: Query): Promise<string> {
     )
   })
 }
+
+export async function createDatabase(): Promise<string> {
+  ipcRenderer.send('create-database')
+  return new Promise((resolve, reject) => {
+    ipcRenderer.on(
+      'created-database',
+      (_event: IpcRendererEvent, result: { err?: Error; dbFile?: string }) => {
+        if (result.err == null) resolve(result.dbFile!)
+        else reject(result.err)
+      }
+    )
+  })
+}
+

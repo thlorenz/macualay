@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { AppController } from '../logic/app-controller'
 import { Query } from '../queries/queries'
 import { saveQueryAs, saveQuery } from '../logic/save-dialog'
+import { StyledHeader } from './styles'
 
 const StyledTextArea = styled.textarea`
   @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:500&display=swap');
@@ -29,7 +30,6 @@ const StyledButton = styled.button`
   height: 4em;
   margin-bottom: 0.3em;
 `
-
 export function QueryInput() {
   const query = AppController.instance.useQuery()
   const handleChange = (event: { target: { value: string } }) =>
@@ -63,6 +63,7 @@ export function QueryMenu() {
   const showSave = query.custom
   return (
     <StyledMenu>
+      <StyledHeader>Query</StyledHeader>
       <StyledButton onClick={onrunQuery}>Run</StyledButton>
       {showSave && <StyledButton onClick={onsaveQuery}>Save</StyledButton>}
       <StyledButton onClick={onsaveQueryAs}>Save As</StyledButton>

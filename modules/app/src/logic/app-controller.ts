@@ -4,18 +4,78 @@ import assert from 'assert'
 import { BirdDataRow, DB, getDB } from '@modules/core'
 
 import { queries, Query } from '../queries/queries'
+import { Database, databases } from '../databases/databases'
 
 export class AppController extends EventEmitter {
   private _query: Query = queries.defaultQuery
   private _queries: readonly Query[] = queries.queries
   private _selectedRow?: BirdDataRow
+  private _databases: readonly Database[] = databases.databases
+  private _syncingDatabase: Database = databases.databases[0]
 
   constructor(private readonly _db: DB) {
     super()
   }
 
-  public refreshQueries() {}
+  //
+  // Database
+  //
+  useDatabases = () => {
+    const [databases, setDatabases] = useState<readonly Database[]>(
+      this._databases
+    )
 
+    const effect: EffectCallback = () => {
+      function onDatabasesChanged(databases: Database[]) {
+        setDatabases(databases)
+      }
+
+      this.on('databases-changed', onDatabasesChanged)
+      return () => {
+        this.off('databases-changed', onDatabasesChanged)
+      }
+    }
+    useEffect(effect)
+
+    return databases
+  }
+
+  useSyncingDatabase = () => {
+    const [database, setDatabase] = useState(this._syncingDatabase)
+
+    const effect: EffectCallback = () => {
+      function onSyncingDatabaseChanged(database: Database) {
+        setDatabase(database)
+      }
+
+      this.on('syncing-database-changed', onSyncingDatabaseChanged)
+      return () => {
+        this.off('syncing-database-changed', onSyncingDatabaseChanged)
+      }
+    }
+    useEffect(effect)
+
+    return database
+  }
+
+  selectedDatabase(database: Database) {
+    this.emit('syncing-database-changed', database)
+  }
+
+  createdDatabase(dbFile: string) {
+    this._databases = databases.refresh()
+    this._syncingDatabase = databases.findDatabase(dbFile)
+    this.emit('databases-changed')
+    this.emit('syncing-database-changed')
+  }
+
+  addSelectedRows() {
+    // TODO: add selected rows to currently syncing database
+  }
+
+  //
+  // Query
+  //
   public get query() {
     return this._query
   }

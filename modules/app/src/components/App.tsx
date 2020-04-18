@@ -3,6 +3,7 @@ import { QueryInput, QueryMenu } from './Query'
 import { Table } from './Table'
 import styled from 'styled-components'
 import { BirdDetails } from './BirdDetails'
+import { DatabaseMenu } from './Database'
 
 const Container = styled.div`
   display: flex;
@@ -12,8 +13,8 @@ const Container = styled.div`
 `
 const Grid = styled.div`
   display: grid;
-  grid-template-rows: 200px auto;
-  grid-template-columns: 300px auto 150px;
+  grid-template-rows: 210px auto;
+  grid-template-columns: 300px auto 150px 100px;
   width: 90vw;
 `
 
@@ -25,6 +26,7 @@ export function App() {
         <BirdDetails />
         <QueryInput />
         <QueryMenu />
+        <DatabaseMenu />
         <Table />
       </Grid>
     </Container>
