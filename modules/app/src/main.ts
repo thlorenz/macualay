@@ -10,7 +10,7 @@ import {
 import * as path from 'path'
 import * as fs from 'fs'
 import isDev from 'electron-is-dev'
-import { queryDirectory, labelFromPath } from './queries/queries'
+import { queryDirectory, labelFromPath, Query } from './queries/queries'
 
 const TWITCH_SETUP = false
 
@@ -95,6 +95,17 @@ async function createWindow() {
       }
     }
   )
+
+  ipcMain.on('save-query', async (event: IpcMainEvent, query: Query) => {
+    let error: Error | undefined = undefined
+    try {
+      await fs.promises.writeFile(query.filePath, query.value, 'utf8')
+    } catch (err) {
+      error = err
+    } finally {
+      event.reply('saved-query', { err: error })
+    }
+  })
 
   if (isDev) {
     require('electron-reload')(__dirname, {

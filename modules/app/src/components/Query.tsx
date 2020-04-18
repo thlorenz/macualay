@@ -3,7 +3,7 @@ import Select, { ActionMeta, ValueType } from 'react-select'
 import styled from 'styled-components'
 import { AppController } from '../logic/app-controller'
 import { Query } from '../queries/queries'
-import { saveQuery } from '../logic/save-dialog'
+import { saveQueryAs, saveQuery } from '../logic/save-dialog'
 
 const StyledTextArea = styled.textarea`
   @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:500&display=swap');
@@ -33,7 +33,7 @@ const StyledButton = styled.button`
 export function QueryInput() {
   const query = AppController.instance.useQuery()
   const handleChange = (event: { target: { value: string } }) =>
-    AppController.instance.editedQuery(event.target.value)
+    AppController.instance.editedQuery(query, event.target.value)
   return <StyledTextArea value={query.value} onChange={handleChange} />
 }
 
@@ -44,17 +44,27 @@ export function QueryMenu() {
   const onrunQuery = () => AppController.instance.runQuery()
   const onsaveQueryAs = async () => {
     try {
-      const label = await saveQuery(query.label, query.value)
-      AppController.instance.savedQuery({ label, value: query.value })
+      const label = await saveQueryAs(query.label, query.value)
+      AppController.instance.savedQueryAs({ ...query, label })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  const onsaveQuery = async () => {
+    try {
+      await saveQuery(query)
+      AppController.instance.savedCurrentQuery()
     } catch (err) {
       console.error(err)
     }
   }
   const onquerySelected = (query: ValueType<Query>, _: ActionMeta) =>
     AppController.instance.selectedQuery(query as Query)
+  const showSave = query.custom
   return (
     <StyledMenu>
       <StyledButton onClick={onrunQuery}>Run</StyledButton>
+      {showSave && <StyledButton onClick={onsaveQuery}>Save</StyledButton>}
       <StyledButton onClick={onsaveQueryAs}>Save As</StyledButton>
       <Select value={query} options={queries} onChange={onquerySelected} />
     </StyledMenu>

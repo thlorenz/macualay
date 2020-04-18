@@ -20,9 +20,13 @@ export class AppController extends EventEmitter {
     return this._query
   }
 
-  public editedQuery = (value: string) => {
+  public editedQuery = (query: Query, value: string) => {
     assert(value != null, 'cannot set null query')
-    this._query = { label: '<edited>', value }
+    if (query.custom) {
+      this._query = { ...query, value }
+    } else {
+      this._query = { ...query, label: '<edit>', value }
+    }
     this.emit('query-updated', this._query)
   }
 
@@ -42,10 +46,15 @@ export class AppController extends EventEmitter {
     this.emit('row-selected', this._selectedRow)
   }
 
-  public savedQuery(savedQuery: Query) {
+  public savedQueryAs(savedQuery: Query) {
     this._queries = queries.refresh()
     this.emit('queries-updated', this._queries)
     this.selectedQuery(savedQuery)
+  }
+
+  public savedCurrentQuery() {
+    this._queries = queries.refresh()
+    this.emit('queries-updated', this._queries)
   }
 
   async runQuery() {
