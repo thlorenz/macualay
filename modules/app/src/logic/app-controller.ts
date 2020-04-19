@@ -1,7 +1,7 @@
 import { EffectCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 import assert from 'assert'
-import { BirdDataRow, DB, getDB } from '@modules/core'
+import { BirdDataRow, DB, connectDB } from '@modules/core'
 
 import { queries, Query } from '../queries/queries'
 import { Database, databases } from '../databases/databases'
@@ -65,8 +65,8 @@ export class AppController extends EventEmitter {
   createdDatabase(dbFile: string) {
     this._databases = databases.refresh()
     this._syncingDatabase = databases.findDatabase(dbFile)
-    this.emit('databases-changed')
-    this.emit('syncing-database-changed')
+    this.emit('databases-changed', this._databases)
+    this.emit('syncing-database-changed', this._syncingDatabase)
   }
 
   addSelectedRows() {
@@ -204,7 +204,7 @@ export class AppController extends EventEmitter {
   }
 
   static async init(dbLocation: string) {
-    const db = await getDB(dbLocation)
+    const db = await connectDB(dbLocation)
     AppController._instance = new AppController(db)
   }
 

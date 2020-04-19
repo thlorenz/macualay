@@ -123,21 +123,15 @@ export class DB {
     return this.queryWithResult(`SELECT * FROM ${BIRD_DATA_TABLE};`)
   }
 
-  static create(location = DB.location): Promise<DB> {
-    return DB._instance != null
-      ? Promise.resolve(DB._instance)
-      : DB._createDB(location)
-  }
-
-  private static _createDB(location: string): Promise<DB> {
+  static createOrConnect(location = DB.location): Promise<DB> {
     return new Promise((resolve, reject) => {
-      let db: Database
-      db = new Database(location, async (err: Error | null) => {
+      let sqliteDB: Database
+      sqliteDB = new Database(location, async (err: Error | null) => {
         if (err != null) reject(err)
-        DB._instance = new DB(db)
+        const db = new DB(sqliteDB)
         try {
-          await DB._instance._initTables()
-          resolve(DB._instance)
+          await db._initTables()
+          resolve(db)
         } catch (err) {
           reject(err)
         }
@@ -145,7 +139,6 @@ export class DB {
     })
   }
 
-  private static _instance: DB | null = null
   static location = ':memory:'
 
   close(): Promise<void> {
@@ -157,5 +150,5 @@ export class DB {
   }
 }
 
-export const getDB = DB.create
+export const connectDB = DB.createOrConnect
 export { BIRD_DATA_TABLE }

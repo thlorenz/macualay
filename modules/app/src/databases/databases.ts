@@ -15,6 +15,10 @@ export function databaseLabelFromPath(p: string) {
 class Databases {
   private _databases: Database[] = []
 
+  constructor() {
+    this.refresh()
+  }
+
   public refresh() {
     this._databases = []
     this._addDatabasesInside(dataDirectory)

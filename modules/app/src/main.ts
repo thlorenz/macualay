@@ -1,16 +1,18 @@
+import { connectDB } from '@modules/core'
 import {
   app,
-  ipcMain,
   BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainEvent,
   Rectangle,
   screen,
-  dialog,
-  IpcMainEvent,
 } from 'electron'
-import * as path from 'path'
-import * as fs from 'fs'
 import isDev from 'electron-is-dev'
-import { queryDirectory, labelFromPath, Query } from './queries/queries'
+import * as fs from 'fs'
+import * as path from 'path'
+import { dataDirectory } from './databases/databases'
+import { labelFromPath, Query, queryDirectory } from './queries/queries'
 
 const TWITCH_SETUP = false
 
@@ -75,37 +77,56 @@ async function createWindow() {
   })
   mainWindow.setOpacity(1.0)
 
-  ipcMain.on(
-    'save-query-as',
-    async (event: IpcMainEvent, defaultLabel: string, query: string) => {
+  ipcMain
+    .on(
+      'save-query-as',
+      async (event: IpcMainEvent, defaultLabel: string, query: string) => {
+        let error: Error | undefined = undefined
+        let label: string | undefined = undefined
+        const res = await dialog.showSaveDialog(mainWindow!, {
+          title: 'Save current query as',
+          defaultPath: path.join(queryDirectory, `${defaultLabel}.sql`),
+          filters: [{ name: 'SQL Files', extensions: ['sql'] }],
+        })
+        if (res.canceled || res.filePath == null) return
+        try {
+          await fs.promises.writeFile(res.filePath, query, 'utf8')
+          label = labelFromPath(res.filePath)
+        } catch (err) {
+          error = err
+        } finally {
+          event.reply('saved-query-as', { err: error, label })
+        }
+      }
+    )
+    .on('save-query', async (event: IpcMainEvent, query: Query) => {
       let error: Error | undefined = undefined
-      let label: string | undefined = undefined
-      const res = await dialog.showSaveDialog(mainWindow!, {
-        title: 'Save current query as',
-        defaultPath: path.join(queryDirectory, `${defaultLabel}.sql`),
-      })
-      if (res.canceled || res.filePath == null) return
       try {
-        await fs.promises.writeFile(res.filePath, query, 'utf8')
-        label = labelFromPath(res.filePath)
+        await fs.promises.writeFile(query.filePath, query.value, 'utf8')
       } catch (err) {
         error = err
       } finally {
-        event.reply('saved-query-as', { err: error, label })
+        event.reply('saved-query', { err: error })
       }
-    }
-  )
+    })
+    .on('create-database', async (event: IpcMainEvent) => {
+      let error: Error | undefined = undefined
+      const res = await dialog.showSaveDialog(mainWindow!, {
+        title: 'Select database location',
+        defaultPath: path.join(dataDirectory, `new.sqlite`),
+        filters: [{ name: 'SQLite Databases', extensions: ['sqlite'] }],
+      })
+      if (res.canceled || res.filePath == null) return
 
-  ipcMain.on('save-query', async (event: IpcMainEvent, query: Query) => {
-    let error: Error | undefined = undefined
-    try {
-      await fs.promises.writeFile(query.filePath, query.value, 'utf8')
-    } catch (err) {
-      error = err
-    } finally {
-      event.reply('saved-query', { err: error })
-    }
-  })
+      try {
+        const db = await connectDB(res.filePath)
+        await db.close()
+      } catch (err) {
+        error = err
+      } finally {
+        event.reply('created-database', { err: error, dbFile: res.filePath })
+      }
+    })
 
   if (isDev) {
     require('electron-reload')(__dirname, {
