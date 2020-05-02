@@ -71,9 +71,19 @@ export type EbirdSpeciesData = {
   taxon_order: number
   sci_name_codes: string
   banding_codes: string
-  order: string
+  ebird_order: string
   family_com_name: string
   family_sci_name: string
+}
+
+const UNKNOWN = '<unknown>'
+export const EMPTY_EBIRD_SPECIES_DATA = {
+  taxon_order: 0,
+  sci_name_codes: UNKNOWN,
+  banding_codes: UNKNOWN,
+  ebird_order: UNKNOWN,
+  family_com_name: UNKNOWN,
+  family_sci_name: UNKNOWN,
 }
 
 export type MIMEType = 'image/jpeg'

@@ -1,5 +1,11 @@
 import * as path from 'path'
-import { connectDB, MacaulayPage } from '@modules/core'
+import {
+  connectDB,
+  MacaulayPage,
+  EbirdSpeciesData,
+  EMPTY_EBIRD_SPECIES_DATA,
+} from '@modules/core'
+import { ebirdSpeciesData } from './ebird-data'
 
 export async function processMacualayPage(
   page: MacaulayPage,
@@ -7,7 +13,13 @@ export async function processMacualayPage(
 ) {
   const db = await connectDB(dbLocation)
   for (const result of page.results.content) {
-    await db.addBirdDataRow(result)
+    let ebirdData: EbirdSpeciesData = EMPTY_EBIRD_SPECIES_DATA
+    try {
+      ebirdData = await ebirdSpeciesData(result.speciesCode)
+    } catch (err) {
+      console.error(err)
+    }
+    await db.addBirdDataRow(result, ebirdData)
   }
   const birdData = await db.selectAllBirdData()
   console.log(birdData)
@@ -16,7 +28,6 @@ export async function processMacualayPage(
 
 ;(async () => {
   const dbLocation = path.resolve(__dirname, '../../../data/macaulay.sqlite')
-  console.log({ dbLocation })
   const page = require('../../../data/page.01.json')
   try {
     await processMacualayPage(page, dbLocation)

@@ -1,6 +1,6 @@
 import { Database } from 'sqlite3'
 import { BIRD_DATA_TABLE, createBirdDataTable } from './create-table'
-import { BirdData, BirdDataRow, ExifData } from './types'
+import { BirdData, BirdDataRow, ExifData, EbirdSpeciesData } from './types'
 
 function escape(v: any) {
   if (typeof v !== 'string') return v
@@ -19,15 +19,14 @@ const exifDataCols = [
   'make',
 ]
 
-// @ts-ignore
 const ebirdDataCols = [
   'taxon_order',
   'sci_name_codes',
   'banding_codes',
-  'order',
+  'ebird_order',
   'family_com_name',
   'family_sci_name',
-]
+] as const
 export const idCols = [
   'assetId',
   'userId',
@@ -69,10 +68,10 @@ export const databaseColumns = [
   ...birdInfoCols,
   ...imageInfoCols,
   ...exifDataCols,
+  ...ebirdDataCols,
   'mediaType',
   'source',
   'licenseType',
-  // ...ebirdDataCols
 ] as const
 const allCols = databaseColumns.join(',')
 
@@ -101,8 +100,8 @@ export class DB {
     return this._execQuery(createBirdDataTable)
   }
 
-  addBirdDataRow(data: BirdData) {
-    const row: Record<string, any> | BirdDataRow = { ...data }
+  addBirdDataRow(data: BirdData, ebirdData: EbirdSpeciesData) {
+    const row: Record<string, any> | BirdDataRow = { ...data, ...ebirdData }
     delete row.exifData
     for (const [k, val] of Object.entries(data.exifData)) {
       if (exifDataCols.includes(k)) row[k] = val
