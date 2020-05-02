@@ -38,7 +38,6 @@ export function DatabaseMenu() {
   }
 
   const onaddSelectedRows = () => AppController.instance.addSelectedRows()
-  console.log({ databases, syncingDatabase })
 
   return (
     <StyledMenu>

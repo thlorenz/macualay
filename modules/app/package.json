@@ -17,6 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/electron-is-dev": "^1.1.1",
+    "@types/electron-json-storage": "^4.0.0",
     "@types/node": "^12",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
@@ -28,6 +29,7 @@
   "dependencies": {
     "@modules/core": "*",
     "electron-is-dev": "^1.2.0",
+    "electron-json-storage": "^4.1.8",
     "electron-reload": "^1.5.0",
     "react": "^16.13.1",
     "react-data-table-component": "^6.5.0",

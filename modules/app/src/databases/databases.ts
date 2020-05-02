@@ -1,8 +1,9 @@
-import { mkdirSync, readdirSync } from 'fs'
-import { join, basename } from 'path'
-import { appRoot } from '../logic/util'
+import { accessSync, mkdirSync, readdirSync } from 'fs'
+import { basename, join } from 'path'
+import { storage } from '../logic/storage'
+import { appDataRoot } from '../logic/util'
 
-export const dataDirectory = join(appRoot, 'macualay', 'data')
+export const dataDirectory = join(appDataRoot, 'data')
 mkdirSync(dataDirectory, { recursive: true })
 
 export type Database = { label: string; filePath: string }
@@ -42,6 +43,21 @@ class Databases {
 
   get databases(): ReadonlyArray<Database> {
     return this._databases
+  }
+
+  async getCurrentDatabase(): Promise<Database> {
+    const db: Database | {} = await storage.get('current-database')
+    if ((<Database>db).filePath == null) return this._databases[0]
+    try {
+      accessSync((<Database>db).filePath)
+      return <Database>db
+    } catch (_) {
+      return this._databases[0]
+    }
+  }
+
+  setCurrentDatabase(database: Database): Promise<void> {
+    return storage.set<Database>('current-database', database)
   }
 }
 

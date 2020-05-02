@@ -11,9 +11,8 @@ export class AppController extends EventEmitter {
   private _queries: readonly Query[] = queries.queries
   private _selectedRow?: BirdDataRow
   private _databases: readonly Database[] = databases.databases
-  private _syncingDatabase: Database = databases.databases[0]
 
-  constructor(private readonly _db: DB) {
+  constructor(private readonly _db: DB, private _syncingDatabase: Database) {
     super()
   }
 
@@ -45,6 +44,7 @@ export class AppController extends EventEmitter {
 
     const effect: EffectCallback = () => {
       function onSyncingDatabaseChanged(database: Database) {
+        databases.setCurrentDatabase(database)
         setDatabase(database)
       }
 
@@ -205,7 +205,8 @@ export class AppController extends EventEmitter {
 
   static async init(dbLocation: string) {
     const db = await connectDB(dbLocation)
-    AppController._instance = new AppController(db)
+    const currentDatabase = await databases.getCurrentDatabase()
+    AppController._instance = new AppController(db, currentDatabase)
   }
 
   async dispose() {
