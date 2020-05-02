@@ -1,6 +1,6 @@
 import { mkdirSync, readdirSync, readFileSync } from 'fs'
 import { join, basename } from 'path'
-import { appRoot } from '../logic/util'
+import { appDataRoot } from '../logic/util'
 
 export type Query = {
   label: string
@@ -9,7 +9,7 @@ export type Query = {
   filePath: string
 }
 
-export const queryDirectory = join(appRoot, 'macualay', 'queries')
+export const queryDirectory = join(appDataRoot, 'queries')
 mkdirSync(queryDirectory, { recursive: true })
 
 export function labelFromPath(p: string) {
