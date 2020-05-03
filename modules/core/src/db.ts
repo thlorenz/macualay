@@ -31,7 +31,7 @@ export const idCols = [
   'assetId',
   'userId',
   'catalogId',
-  'eBirdChecklistId',
+  'ebirdChecklistId',
 ] as const
 
 export const locationCols = ['location', 'latitude', 'longitude'] as const
@@ -100,22 +100,35 @@ export class DB {
     return this._execQuery(createBirdDataTable)
   }
 
-  addBirdDataRow(data: BirdData, ebirdData: EbirdSpeciesData) {
-    const row: Record<string, any> | BirdDataRow = { ...data, ...ebirdData }
-    delete row.exifData
-    for (const [k, val] of Object.entries(data.exifData)) {
-      if (exifDataCols.includes(k)) row[k] = val
-    }
+  resolveRows(assetIds: string[]): Promise<BirdDataRow[]> {
+    const ids = assetIds.join(', ')
+    return this.queryWithResult(
+      `SELECT * from ${BIRD_DATA_TABLE} WHERE assetId in (${ids});`
+    )
+  }
 
+  async addBirdDataRows(rows: BirdDataRow[]): Promise<void> {
+    for (const row of rows) await this.addBirdDataRow(row)
+  }
+
+  addBirdDataRow(row: BirdDataRow): Promise<void> {
     const values: (string | number | ExifData)[] = []
     for (const [k, v] of Object.entries(row)) {
       const colIdx = databaseColumns.indexOf(k)
       values[colIdx] = numberCols.includes(k) ? v : `'${escape(v)}'`
     }
     const parameters = values.join(',')
-
-    const query = `INSERT INTO ${BIRD_DATA_TABLE} (${allCols}) VALUES (${parameters})`
+    const query = `INSERT INTO ${BIRD_DATA_TABLE} (${allCols}) VALUES (${parameters});`
     return this._execQuery(query)
+  }
+
+  addBirdData(data: BirdData, ebirdData: EbirdSpeciesData) {
+    const row: Record<string, any> | BirdDataRow = { ...data, ...ebirdData }
+    delete row.exifData
+    for (const [k, val] of Object.entries(data.exifData)) {
+      if (exifDataCols.includes(k)) row[k] = val
+    }
+    return this.addBirdDataRow(row as BirdDataRow)
   }
 
   async selectAllBirdData(): Promise<BirdDataRow[]> {

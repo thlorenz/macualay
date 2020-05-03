@@ -5,12 +5,14 @@ import { BirdDataRow, DB, connectDB } from '@modules/core'
 
 import { queries, Query } from '../queries/queries'
 import { Database, databases } from '../databases/databases'
+import { syncDatabase } from './sync-database'
 
 export class AppController extends EventEmitter {
   private _query: Query = queries.defaultQuery
   private _queries: readonly Query[] = queries.queries
   private _selectedRow?: BirdDataRow
   private _databases: readonly Database[] = databases.databases
+  private _checkedAssetIDs: string[] = []
 
   constructor(private readonly _db: DB, private _syncingDatabase: Database) {
     super()
@@ -69,8 +71,21 @@ export class AppController extends EventEmitter {
     this.emit('syncing-database-changed', this._syncingDatabase)
   }
 
-  addSelectedRows() {
-    // TODO: add selected rows to currently syncing database
+  updateCheckedAssetIDs(assetIDs: string[]) {
+    this._checkedAssetIDs = assetIDs
+  }
+
+  async addCheckedRows() {
+    const syncRequest = {
+      mainDB: this._db,
+      syncPath: this._syncingDatabase.filePath,
+      assetIDs: this._checkedAssetIDs,
+    }
+    try {
+      await syncDatabase(syncRequest)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   //

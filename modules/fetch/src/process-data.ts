@@ -19,7 +19,7 @@ export async function processMacualayPage(
     } catch (err) {
       console.error(err)
     }
-    await db.addBirdDataRow(result, ebirdData)
+    await db.addBirdData(result, ebirdData)
   }
   const birdData = await db.selectAllBirdData()
   console.log(birdData)

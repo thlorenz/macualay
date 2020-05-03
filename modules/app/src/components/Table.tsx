@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react'
 import { AppController } from '../logic/app-controller'
 import { BirdDataRow } from '@modules/core'
-import DataTable, { IDataTableColumn } from 'react-data-table-component'
+import DataTable, {
+  IDataTableColumn,
+  IDataTableProps,
+} from 'react-data-table-component'
 
 function columnsFromData(data: BirdDataRow[]): IDataTableColumn<BirdDataRow>[] {
   if (data.length === 0) return []
@@ -20,6 +23,13 @@ export function Table() {
   function handleRowClicked(row: BirdDataRow) {
     AppController.instance.selectedRow = row
   }
+  const onSelectedRowsChange: IDataTableProps<
+    BirdDataRow
+  >['onSelectedRowsChange'] = ({ selectedRows }) => {
+    AppController.instance.updateCheckedAssetIDs(
+      selectedRows.map((x) => x.assetId)
+    )
+  }
 
   return (
     <DataTable
@@ -27,6 +37,7 @@ export function Table() {
       data={data.map((x) => ({ ...x, id: x.assetId }))}
       columns={columns}
       onRowClicked={handleRowClicked}
+      onSelectedRowsChange={onSelectedRowsChange}
       highlightOnHover
       pointerOnHover
       selectableRows

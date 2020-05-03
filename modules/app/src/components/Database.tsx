@@ -37,13 +37,13 @@ export function DatabaseMenu() {
     }
   }
 
-  const onaddSelectedRows = () => AppController.instance.addSelectedRows()
+  const onaddCheckedRows = () => AppController.instance.addCheckedRows()
 
   return (
     <StyledMenu>
       <StyledHeader>Database</StyledHeader>
       <StyledButton onClick={oncreateDB}>Create</StyledButton>
-      <StyledButton onClick={onaddSelectedRows}>Add Selected</StyledButton>
+      <StyledButton onClick={onaddCheckedRows}>Add Checked</StyledButton>
       <Select
         value={syncingDatabase}
         options={databases}
