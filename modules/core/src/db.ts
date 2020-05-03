@@ -107,6 +107,12 @@ export class DB {
     )
   }
 
+  getAllAssetIds(): Promise<string[]> {
+    return this.queryWithResult(
+      `SELECT assetId FROM ${BIRD_DATA_TABLE};`
+    ).then((rows) => rows.map((x) => x.assetId))
+  }
+
   async addBirdDataRows(rows: BirdDataRow[]): Promise<void> {
     for (const row of rows) await this.addBirdDataRow(row)
   }
@@ -118,7 +124,7 @@ export class DB {
       values[colIdx] = numberCols.includes(k) ? v : `'${escape(v)}'`
     }
     const parameters = values.join(',')
-    const query = `INSERT INTO ${BIRD_DATA_TABLE} (${allCols}) VALUES (${parameters});`
+    const query = `REPLACE INTO ${BIRD_DATA_TABLE} (${allCols}) VALUES (${parameters});`
     return this._execQuery(query)
   }
 

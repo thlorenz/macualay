@@ -5,7 +5,7 @@ import { BirdDataRow, DB, connectDB } from '@modules/core'
 
 import { queries, Query } from '../queries/queries'
 import { Database, databases } from '../databases/databases'
-import { syncDatabase } from './sync-database'
+import { syncDatabase, syncedAssetIds } from './sync-database'
 
 export class AppController extends EventEmitter {
   private _query: Query = queries.defaultQuery
@@ -16,6 +16,7 @@ export class AppController extends EventEmitter {
 
   constructor(private readonly _db: DB, private _syncingDatabase: Database) {
     super()
+    this._updateSyncedAssetIds()
   }
 
   //
@@ -62,6 +63,7 @@ export class AppController extends EventEmitter {
 
   selectedDatabase(database: Database) {
     this.emit('syncing-database-changed', database)
+    this._updateSyncedAssetIds()
   }
 
   createdDatabase(dbFile: string) {
@@ -69,10 +71,16 @@ export class AppController extends EventEmitter {
     this._syncingDatabase = databases.findDatabase(dbFile)
     this.emit('databases-changed', this._databases)
     this.emit('syncing-database-changed', this._syncingDatabase)
+    this._updateSyncedAssetIds()
   }
 
   updateCheckedAssetIDs(assetIDs: string[]) {
     this._checkedAssetIDs = assetIDs
+  }
+
+  async _updateSyncedAssetIds() {
+    const assetIDs = await syncedAssetIds(this._syncingDatabase.filePath)
+    this.emit('synced-assetids-changed', assetIDs)
   }
 
   async addCheckedRows() {
@@ -83,9 +91,29 @@ export class AppController extends EventEmitter {
     }
     try {
       await syncDatabase(syncRequest)
+      this._updateSyncedAssetIds()
     } catch (err) {
       console.error(err)
     }
+  }
+
+  //
+  // Sync Status
+  //
+  useSyncedAssetIDs() {
+    const [syncedAssetIDs, setSyncedAssetIDs] = useState<Set<string>>(new Set())
+    const effect: EffectCallback = () => {
+      function onSyncedAssetIDsChanged(syncedAssetIDs: string[]) {
+        setSyncedAssetIDs(new Set(syncedAssetIDs))
+      }
+      this.on('synced-assetids-changed', onSyncedAssetIDsChanged)
+      return () => {
+        this.off('synced-assetids-changed', onSyncedAssetIDsChanged)
+      }
+    }
+    useEffect(effect)
+
+    return syncedAssetIDs
   }
 
   //

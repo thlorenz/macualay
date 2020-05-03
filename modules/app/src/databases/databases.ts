@@ -28,6 +28,7 @@ class Databases {
 
   private _addDatabasesInside(dirname: string) {
     const files = readdirSync(dirname).filter((x) => /\.sqlite$/.test(x))
+    // TODO: if we don't yet have a syncing database create a default one
     for (const file of files) {
       const filePath = join(dirname, file)
       const label = databaseLabelFromPath(file)

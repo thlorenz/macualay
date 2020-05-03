@@ -1,12 +1,12 @@
 import { connectDB, DB } from '@modules/core'
 
-export type SyncRequest = {
+export type SyncDetails = {
   mainDB: DB
   syncPath: string
   assetIDs: string[]
 }
 
-export async function syncDatabase(syncRequest: SyncRequest) {
+export async function syncDatabase(syncRequest: SyncDetails) {
   let syncDB
   try {
     syncDB = await connectDB(syncRequest.syncPath)
@@ -16,5 +16,16 @@ export async function syncDatabase(syncRequest: SyncRequest) {
     console.error(err)
   } finally {
     await syncDB?.close()
+  }
+}
+
+export async function syncedAssetIds(syncPath: string): Promise<string[]> {
+  let syncDB
+  try {
+    syncDB = await connectDB(syncPath)
+    return syncDB.getAllAssetIds()
+  } catch (err) {
+    console.error(err)
+    return Promise.resolve([])
   }
 }
