@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react'
-import { AppController } from '../logic/app-controller'
 import { BirdDataRow } from '@modules/core'
+import React, { useMemo } from 'react'
 import DataTable, {
   IDataTableColumn,
   IDataTableProps,
 } from 'react-data-table-component'
+import { AppController } from '../logic/app-controller'
 
 function columnsFromData(data: BirdDataRow[]): IDataTableColumn<BirdDataRow>[] {
   if (data.length === 0) return []
@@ -15,6 +15,16 @@ function columnsFromData(data: BirdDataRow[]): IDataTableColumn<BirdDataRow>[] {
     sortable: true,
   }))
   return cols
+}
+
+const syncedMark = '\u2713'
+const syncedColumn = {
+  name: 'Added',
+  selector: 'Synced',
+  sortable: true,
+  style: { color: 'green', fontSize: '1.5em' },
+  center: true,
+  maxWidth: '0.01em',
 }
 
 export function Table() {
@@ -32,12 +42,21 @@ export function Table() {
     )
   }
 
-  console.log(syncedAssetIDs)
+  function toColumns(x: BirdDataRow) {
+    const synced = syncedAssetIDs.has(x.assetId)
+    const syncLabel = synced ? syncedMark : ''
+    return {
+      Synced: syncLabel,
+      ...x,
+      id: x.assetId,
+    }
+  }
+
   return (
     <DataTable
       title="Query Result"
-      data={data.map((x) => ({ ...x, id: x.assetId }))}
-      columns={columns}
+      data={data.map(toColumns)}
+      columns={[syncedColumn, ...columns]}
       onRowClicked={handleRowClicked}
       onSelectedRowsChange={onSelectedRowsChange}
       highlightOnHover
