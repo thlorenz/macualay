@@ -5,7 +5,7 @@ import { BirdDataRow, DB, connectDB } from '@modules/core'
 
 import { queries, Query } from '../queries/queries'
 import { Database, databases } from '../databases/databases'
-import { syncDatabase, syncedAssetIds } from './sync-database'
+import { syncDatabase, syncedAssetIds, SyncDetails } from './sync-database'
 
 export class AppController extends EventEmitter {
   private _query: Query = queries.defaultQuery
@@ -84,14 +84,32 @@ export class AppController extends EventEmitter {
   }
 
   async addCheckedRows() {
-    const syncRequest = {
+    const syncRequest: SyncDetails = {
       mainDB: this._db,
       syncPath: this._syncingDatabase.filePath,
       assetIDs: this._checkedAssetIDs,
+      action: 'add',
     }
     try {
       await syncDatabase(syncRequest)
       this._updateSyncedAssetIds()
+      this.emit('checked-rows-added')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  async removeCheckedRows() {
+    const syncRequest: SyncDetails = {
+      mainDB: this._db,
+      syncPath: this._syncingDatabase.filePath,
+      assetIDs: this._checkedAssetIDs,
+      action: 'remove',
+    }
+    try {
+      await syncDatabase(syncRequest)
+      this._updateSyncedAssetIds()
+      this.emit('checked-rows-added')
     } catch (err) {
       console.error(err)
     }
@@ -114,6 +132,25 @@ export class AppController extends EventEmitter {
     useEffect(effect)
 
     return syncedAssetIDs
+  }
+
+  useClearCheckedRows() {
+    const [clearCheckedRows, setClearCheckedRows] = useState(false)
+    const effect: EffectCallback = () => {
+      console.log('use efect')
+
+      function onCheckedRowsAdded() {
+        setClearCheckedRows(true)
+        setTimeout(() => setClearCheckedRows(false), 10)
+      }
+      this.on('checked-rows-added', onCheckedRowsAdded)
+      return () => {
+        this.off('checked-rows-added', onCheckedRowsAdded)
+      }
+    }
+    useEffect(effect)
+
+    return clearCheckedRows
   }
 
   //

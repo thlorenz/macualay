@@ -30,6 +30,8 @@ const syncedColumn = {
 export function Table() {
   const data: BirdDataRow[] = AppController.instance.useQueryResult()
   const syncedAssetIDs = AppController.instance.useSyncedAssetIDs()
+  const clearCheckedRows = AppController.instance.useClearCheckedRows()
+
   const columns = useMemo(() => columnsFromData(data), [data])
   function handleRowClicked(row: BirdDataRow) {
     AppController.instance.selectedRow = row
@@ -63,6 +65,7 @@ export function Table() {
       pointerOnHover
       selectableRows
       dense
+      clearSelectedRows={clearCheckedRows}
       style={{
         gridRowStart: 2,
         gridRowEnd: 2,

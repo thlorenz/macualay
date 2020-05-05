@@ -12,10 +12,18 @@ const StyledMenu = styled.div`
   grid-column-start: 4;
   grid-column-end: 4;
 `
-const StyledButton = styled.button`
+const CreateButton = styled.button`
   cursor: pointer;
   text-align: center;
   width: 100%;
+  height: 4em;
+  margin-bottom: 0.3em;
+`
+
+const AddRemoveButton = styled.button`
+  cursor: pointer;
+  text-align: center;
+  width: 50%;
   height: 4em;
   margin-bottom: 0.3em;
 `
@@ -38,12 +46,16 @@ export function DatabaseMenu() {
   }
 
   const onaddCheckedRows = () => AppController.instance.addCheckedRows()
+  const onremoveCheckedRows = () => AppController.instance.removeCheckedRows()
 
   return (
     <StyledMenu>
       <StyledHeader>Database</StyledHeader>
-      <StyledButton onClick={oncreateDB}>Create</StyledButton>
-      <StyledButton onClick={onaddCheckedRows}>Add Checked</StyledButton>
+      <CreateButton onClick={oncreateDB}>Create</CreateButton>
+      <AddRemoveButton onClick={onaddCheckedRows}>{'\u2713'}</AddRemoveButton>
+      <AddRemoveButton onClick={onremoveCheckedRows}>
+        {'\u2717'}
+      </AddRemoveButton>
       <Select
         value={syncingDatabase}
         options={databases}

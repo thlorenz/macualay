@@ -88,9 +88,9 @@ export class DB {
     )
   }
 
-  queryWithResult(query: string): Promise<any[]> {
+  queryWithResult(query: string): Promise<any> {
     return new Promise((resolve, reject) =>
-      this._db.all(query, (err: Error | null, rows: any[]) =>
+      this._db.all(query, (err: Error | null, rows: any) =>
         err == null ? resolve(rows) : reject(err)
       )
     )
@@ -103,14 +103,21 @@ export class DB {
   resolveRows(assetIds: string[]): Promise<BirdDataRow[]> {
     const ids = assetIds.join(', ')
     return this.queryWithResult(
-      `SELECT * from ${BIRD_DATA_TABLE} WHERE assetId in (${ids});`
+      `SELECT * FROM ${BIRD_DATA_TABLE} WHERE assetId in (${ids});`
+    )
+  }
+
+  removeBirdData(assetIds: string[]): Promise<number> {
+    const ids = assetIds.join(', ')
+    return this.queryWithResult(
+      `DELETE FROM ${BIRD_DATA_TABLE} WHERE assetId in (${ids});`
     )
   }
 
   getAllAssetIds(): Promise<string[]> {
     return this.queryWithResult(
       `SELECT assetId FROM ${BIRD_DATA_TABLE};`
-    ).then((rows) => rows.map((x) => x.assetId))
+    ).then((rows: BirdDataRow[]) => rows.map((x) => x.assetId))
   }
 
   async addBirdDataRows(rows: BirdDataRow[]): Promise<void> {
