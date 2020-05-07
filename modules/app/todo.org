@@ -1,0 +1,11 @@
+#+TITLE: Todo
+
+* Maualay Database App
+
+- syncing checked rows [2/2]
+  - [X] clear checked rows once they have been added
+    - a =clearSelected= boolean is available on =DataTable= but did not seem to work
+  - [X] add way to remove checked rows
+
+- cleanups [0/1]
+  - [ ] when switching sync dbs update checked added rows
