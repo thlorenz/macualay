@@ -138,8 +138,6 @@ export class AppController extends EventEmitter {
   useClearCheckedRows() {
     const [clearCheckedRows, setClearCheckedRows] = useState(false)
     const effect: EffectCallback = () => {
-      console.log('use efect')
-
       function onCheckedRowsAdded() {
         setClearCheckedRows(true)
         setTimeout(() => setClearCheckedRows(false), 10)
