@@ -62,7 +62,8 @@ export class AppController extends EventEmitter {
   }
 
   selectedDatabase(database: Database) {
-    this.emit('syncing-database-changed', database)
+    this._syncingDatabase = database
+    this.emit('syncing-database-changed', this._syncingDatabase)
     this._updateSyncedAssetIds()
   }
 

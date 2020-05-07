@@ -7,5 +7,5 @@
     - a =clearSelected= boolean is available on =DataTable= but did not seem to work
   - [X] add way to remove checked rows
 
-- cleanups [0/1]
-  - [ ] when switching sync dbs update checked added rows
+- cleanups [1/1]
+  - [X] when switching sync dbs update checked added rows
