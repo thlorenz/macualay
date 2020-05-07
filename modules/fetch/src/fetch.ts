@@ -1,2 +1,2 @@
-export * from './fetch-ebird-data'
+export * from './ebird-data'
 export * from './process-data'

@@ -9,3 +9,10 @@
 
 - cleanups [1/1]
   - [X] when switching sync dbs update checked added rows
+
+* Macaulay Data Fetcher [0/4]
+
+ - [ ] install node fetch lib and use it to fetch one page
+ - [ ] read next cursor mark from result and fetch again with modified URL
+ - [ ] store each fetched page in db
+ - [ ] run it as script until cursor mark comes back empty
