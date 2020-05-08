@@ -1,4 +1,4 @@
-#+TITLE: Todo
+#+TITLE: Macualay Data Extractor
 
 * Maualay Database App
 
@@ -10,9 +10,12 @@
 - cleanups [1/1]
   - [X] when switching sync dbs update checked added rows
 
-* Macaulay Data Fetcher [0/4]
+* Macaulay Data Fetcher [5/5]
 
- - [ ] install node fetch lib and use it to fetch one page
- - [ ] read next cursor mark from result and fetch again with modified URL
- - [ ] store each fetched page in db
- - [ ] run it as script until cursor mark comes back empty
+ - [X] install node fetch lib and use it to fetch one page
+ - [X] read next cursor mark from result and fetch again with modified URL
+ - [X] store each fetched page in db
+ - [X] fix invalid columns stores (mapping all undefined/null to 'NULL')
+   - do this by storing an /invalid/ page in JSON and execute db entry directly
+   - fixed as well via ebird data defaults
+ - [X] run it as script until cursor mark comes back empty or repeats

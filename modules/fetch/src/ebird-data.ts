@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { EbirdSpeciesData } from '@modules/core'
+import { EbirdSpeciesData, EMPTY_EBIRD_SPECIES_DATA } from '@modules/core'
 import fs from 'fs'
 import path from 'path'
 
@@ -28,14 +28,17 @@ async function processCSV(
   processedCSV = new Map()
   for (const row of rows) {
     const cols = row.split(',').map((x) => x.trim())
-    processedCSV.set(cols[ebirdDataFields.SPECIES_CODE], {
-      taxon_order: parseFloat(cols[ebirdDataFields.TAXON_ORDER]),
-      sci_name_codes: cols[ebirdDataFields.SCI_NAME_CODES],
-      banding_codes: cols[ebirdDataFields.BANDING_CODES],
-      ebird_order: cols[ebirdDataFields.ORDER],
-      family_com_name: cols[ebirdDataFields.FAMILY_COM_NAME],
-      family_sci_name: cols[ebirdDataFields.FAMILY_SCI_NAME],
-    })
+    processedCSV.set(
+      cols[ebirdDataFields.SPECIES_CODE],
+      Object.assign({}, EMPTY_EBIRD_SPECIES_DATA, {
+        taxon_order: parseFloat(cols[ebirdDataFields.TAXON_ORDER]),
+        sci_name_codes: cols[ebirdDataFields.SCI_NAME_CODES],
+        banding_codes: cols[ebirdDataFields.BANDING_CODES],
+        ebird_order: cols[ebirdDataFields.ORDER],
+        family_com_name: cols[ebirdDataFields.FAMILY_COM_NAME],
+        family_sci_name: cols[ebirdDataFields.FAMILY_SCI_NAME],
+      })
+    )
   }
   return processedCSV
 }

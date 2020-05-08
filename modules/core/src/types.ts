@@ -1,3 +1,5 @@
+const UNKNOWN = '<unknown>'
+
 export type MacaulayPage = {
   results: {
     nextCursorMark: string
@@ -62,6 +64,17 @@ export type ExifData = {
   model: string
   make: string
 }
+export const EXIF_DATA_DEFAULTS = {
+  exposure_time: UNKNOWN,
+  lens_model: UNKNOWN,
+  f_number: UNKNOWN,
+  focal_length: UNKNOWN,
+  iso: UNKNOWN,
+  mime_type: 'image/jpeg',
+  create_dt: UNKNOWN,
+  model: UNKNOWN,
+  make: UNKNOWN,
+}
 
 // Specific Species:
 //  curl --location --request GET 'https://api.ebird.org/v2/ref/taxonomy/ebird?species=zebdov'
@@ -76,7 +89,6 @@ export type EbirdSpeciesData = {
   family_sci_name: string
 }
 
-const UNKNOWN = '<unknown>'
 export const EMPTY_EBIRD_SPECIES_DATA = {
   taxon_order: 0,
   sci_name_codes: UNKNOWN,

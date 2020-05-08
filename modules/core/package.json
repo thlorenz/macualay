@@ -5,6 +5,8 @@
   "main": "./dist/core.js",
   "types": "./src/core.ts",
   "scripts": {
+    "watch": "tsc -b -w",
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",

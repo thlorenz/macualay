@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS bird_data (
 
   userId TEXT NOT NULL,
   catalogId TEXT NOT NULL,
-  ebirdChecklistId TEXT,
+  eBirdChecklistId TEXT,
 
   userDisplayName TEXT NOT NULL,
 
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS bird_data (
 
 
   -- Image Info
-  width INTEGER NOT NULL,
-  height INTEGER NOT NULL,
+  width INTEGER,
+  height INTEGER,
 
   -- ExifData
   exposure_time TEXT,

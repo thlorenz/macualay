@@ -4,7 +4,18 @@ Storing macaulay bird data into a sqlite database.
 
 ## Getting Data
 
-Getting 30 results at a time
+Getting 100 results at a time
+
+``` sh
+cd modules/fetch
+DEBUG='(process|db|fetch):(info|error)' ts-node src/fetch-data.ts
+```
+
+It tracks which cursors (pages) it visited and finishes automatically when it already has seen a page.
+It appears that once the last page is reached macaulay points to the first page again.
+
+
+### Scripts used to discover how to get data
 
 ```sh
 # documenting how this was downloaded 30 results at a time
